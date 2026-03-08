@@ -17,7 +17,7 @@ export const authApi = {
     logout: async () => {
         await api.post('/auth/logout');
         tokenStore.clear();
-        window.location.href = '/login';
+        window.location.href = '/';
     },
 
     refreshSession: async (): Promise<boolean> => {

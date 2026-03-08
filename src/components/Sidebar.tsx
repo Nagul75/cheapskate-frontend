@@ -17,7 +17,9 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar {...props}>
       <SidebarHeader>
         <div className="flex items-center gap-2">
-          <Wallet size={24} className="text-pink-600" />
+            <div className="w-8 h-8 bg-pink-600 rounded-md flex items-center justify-center">
+                <Wallet size={20} className="text-white" />
+            </div>
           <h1 className="text-xl font-mono font-medium tracking-tighter first:mt-0">
             Cheapskate
           </h1>

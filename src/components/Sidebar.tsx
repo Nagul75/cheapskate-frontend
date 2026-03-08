@@ -28,16 +28,16 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="font-light">Dashboard</SidebarMenuButton>
+                <SidebarMenuButton>Dashboard</SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton className="font-light">Transactions</SidebarMenuButton>
+                <SidebarMenuButton>Transactions</SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton className="font-light">Accounts</SidebarMenuButton>
+                <SidebarMenuButton>Accounts</SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton className="font-light">Categories</SidebarMenuButton>
+                <SidebarMenuButton>Categories</SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

@@ -14,7 +14,6 @@ const router = createBrowserRouter(Routes);
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
     <AuthProvider>
       <ThemeProvider attribute="class" defaultTheme="system">
         <QueryClientProvider client={queryClient}>
@@ -22,5 +21,4 @@ createRoot(document.getElementById("root")!).render(
         </QueryClientProvider>
       </ThemeProvider>
     </AuthProvider>
-  </StrictMode>
 )

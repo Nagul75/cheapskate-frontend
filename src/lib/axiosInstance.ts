@@ -14,7 +14,8 @@ api.interceptors.request.use((config) => {
 });
 
 // Refresh flow
-let refreshing = false;
+let refreshPromise: Promise<string> | null = null;
+
 let failedQueue: Array<{
   resolve: (token: string) => void;
   reject: (err: unknown) => void;
@@ -24,6 +25,33 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((p) => (error ? p.reject(error) : p.resolve(token!)));
   failedQueue = [];
 };
+
+function doRefresh(): Promise<string> {
+  if (refreshPromise) return refreshPromise; // same promise returned to all concurrent callers
+
+  refreshPromise = axios
+    .post<{ accessToken: string }>(
+      "http://localhost:3000/auth/refresh",
+      {},
+      { withCredentials: true },
+    )
+    .then(({ data }) => {
+      tokenStore.set(data.accessToken);
+      processQueue(null, data.accessToken);
+      return data.accessToken;
+    })
+    .catch((err) => {
+      processQueue(err, null);
+      tokenStore.clear();
+      window.location.href = "/login";
+      throw err;
+    })
+    .finally(() => {
+      refreshPromise = null; // clear so future refreshes can happen
+    });
+
+  return refreshPromise;
+}
 
 api.interceptors.response.use(
   (res) => res,
@@ -38,42 +66,17 @@ api.interceptors.response.use(
       return Promise.reject(err);
     }
 
-    if (refreshing) {
-      return new Promise((resolve, reject) => {
-        failedQueue.push({ resolve, reject });
-      }).then((token) => {
-        original.headers = {
-          ...original.headers,
-          Authorization: `Bearer ${token}`,
-        };
-        return api(original);
-      });
-    }
-
     original._retry = true;
-    refreshing = true;
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:3000/auth/refresh",
-        {},
-        { withCredentials: true },
-      );
-
-      tokenStore.set(data.accessToken);
-      processQueue(null, data.accessToken);
+      const token = await doRefresh();
       original.headers = {
         ...original.headers,
-        Authorization: `Bearer ${data.accessToken}`,
+        Authorization: `Bearer ${token}`,
       };
       return api(original);
-    } catch (err) {
-      processQueue(err, null);
-      tokenStore.clear();
-      window.location.href = "/login";
-      return Promise.reject(err);
-    } finally {
-      refreshing = false;
+    } catch (refreshErr) {
+      return Promise.reject(refreshErr);
     }
   },
 );

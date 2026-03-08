@@ -5,6 +5,7 @@ import { Separator } from "./ui/separator";
 import AppSidebar from "./Sidebar";
 
 import { ThemeToggle } from "./ui/theme-toggle";
+import { LogoutButton } from "./ui/logout-button";
 
 function Layout() {
   return (
@@ -18,6 +19,7 @@ function Layout() {
           </div>
           <div className="flex gap-4 items-center">
             <ThemeToggle />
+            <LogoutButton />
           </div>
         </header>
         <main className="flex-1 overflow-auto p-4">

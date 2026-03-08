@@ -32,5 +32,10 @@ export const authApi = {
         } catch {
             return false;
         }
+    },
+
+    getMe: async() => {
+        const res = await axios.get("http://localhost:3000/auth/me");
+        return res.data;
     }
 }

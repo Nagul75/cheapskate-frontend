@@ -11,7 +11,7 @@ export function PublicHeader() {
             <div className="w-8 h-8 bg-pink-600 rounded-md flex items-center justify-center">
                 <Wallet size={20} className="text-white" />
             </div>
-            <span className="text-xl tracking-tight">Cheapskate</span>
+            <span className="text-xl font-mono font-medium tracking-tighter first:mt-0">Cheapskate</span>
           </Link>
           
           <div className="flex gap-4 items-center">

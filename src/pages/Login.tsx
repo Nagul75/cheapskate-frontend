@@ -9,7 +9,7 @@ import { authApi } from "@/api/auth";
 
 export function Login() {
   const navigate = useNavigate();
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, setIsAuthenticated, setUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -28,6 +28,8 @@ export function Login() {
 
     try {
       await authApi.login({ email, password });
+      const userData = await authApi.getMe();
+      setUser(userData.user);
       setIsAuthenticated(true);
       navigate("/app", { replace: true });
     } catch (err) {

@@ -5,7 +5,7 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Hero } from "./pages/Hero";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-
+import {Dashboard} from "./pages/Dashboard";
 export const Routes:RouteObject[] = [
     {
         path: "/",
@@ -27,6 +27,12 @@ export const Routes:RouteObject[] = [
     },
     {
         path: "/app",
-        element: <ProtectedRoute><Layout/></ProtectedRoute>
+        element: <ProtectedRoute><Layout/></ProtectedRoute>,
+        children: [
+            {
+                index: true,
+                element: <Dashboard/>
+            }
+        ]
     }
 ]

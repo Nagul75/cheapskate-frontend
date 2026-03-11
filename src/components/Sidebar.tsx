@@ -11,8 +11,12 @@ import {
 } from "@/components/ui/sidebar";
 
 import { Wallet, Settings } from "lucide-react";
+import { useAuth } from "@/providers/authProvider";
+import { Link } from "react-router-dom";
 
 function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth();
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -30,7 +34,9 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton>Dashboard</SidebarMenuButton>
+                <SidebarMenuButton asChild>
+                  <Link to="/app">Dashboard</Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton>Transactions</SidebarMenuButton>
@@ -46,7 +52,15 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="border-t p-4">
-            <Settings/>
+        <div className="flex items-center justify-between">
+          <div>
+            {user?.name && <p className="text-sm font-medium">{user.name}</p>}
+            <p className="text-xs text-muted-foreground">{user?.email}</p>
+          </div>
+          <button className="p-1 hover:bg-accent rounded">
+            <Settings size={16} />
+          </button>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

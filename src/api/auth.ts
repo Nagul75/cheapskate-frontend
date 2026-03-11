@@ -35,7 +35,7 @@ export const authApi = {
     },
 
     getMe: async() => {
-        const res = await axios.get("http://localhost:3000/auth/me");
+        const res = await api.get("/auth/me");
         return res.data;
     }
 }

@@ -134,7 +134,7 @@ export function Hero() {
             const Icon = feature.icon;
             return (
               <div key={index} className="group card-running-border">
-                <Card className="card-inner h-48 border border-border hover:border-l-2 hover:border-l-chart-1 group-hover:shadow-lg transition-shadow duration-300 rounded-none">
+                <Card className="card-inner h-48 border border-border hover:border-l-4 hover:border-l-chart-1 group-hover:shadow-lg transition-all duration-200 rounded-none hover:rounded-md">
                   <CardHeader>
                     <div className="w-12 h-12 bg-pink-600/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-pink-600/20 transition-colors duration-300">
                       <Icon className="w-6 h-6 text-pink-600 group-hover:scale-110 transition-transform duration-300" />

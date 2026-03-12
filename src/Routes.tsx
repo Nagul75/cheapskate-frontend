@@ -6,6 +6,7 @@ import { Register } from "./pages/Register";
 import { Hero } from "./pages/Hero";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import {Dashboard} from "./pages/Dashboard";
+import { TransactionsPage } from "./pages/TransactionsPage";
 export const Routes:RouteObject[] = [
     {
         path: "/",
@@ -32,7 +33,11 @@ export const Routes:RouteObject[] = [
             {
                 index: true,
                 element: <Dashboard/>
-            }
+            },
+            {
+                path: "transactions",
+                element: <TransactionsPage/>
+            },
         ]
     }
 ]

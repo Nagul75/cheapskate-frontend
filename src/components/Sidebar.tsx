@@ -39,7 +39,9 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton>Transactions</SidebarMenuButton>
+                <SidebarMenuButton asChild>
+                  <Link to="/app/transactions">Transactions</Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton>Accounts</SidebarMenuButton>

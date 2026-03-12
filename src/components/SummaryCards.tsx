@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { SummaryData } from "@/api/dashboard";
-import { MoveUp, MoveDown, Diff, Percent, TrendingUp, TrendingDown } from "lucide-react";
+import { MoveDown, Diff, Percent, TrendingUp} from "lucide-react";
 
 interface SummaryCardsProps {
   summary: SummaryData;
@@ -18,7 +18,7 @@ export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-3xl text-green-600 font-mono">
-            {formatCurrency(summary.income)}
+            {summary.income === 0 ? '━━' : formatCurrency(summary.income)}
           </div>
         </CardContent>
       </Card>
@@ -30,7 +30,7 @@ export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-3xl text-red-600 dark:text-red-500/90 font-mono">
-            {formatCurrency(summary.expenses)}
+            {summary.expenses === 0 ? '━━' : formatCurrency(summary.expenses)}
           </div>
         </CardContent>
       </Card>
@@ -41,8 +41,8 @@ export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
             <Diff className="h-5 w-5 text-gray-700" />
         </CardHeader>
         <CardContent>
-          <div className={`text-3xl font-mono ${summary.net >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {formatCurrency(summary.net)}
+          <div className="text-3xl font-mono text-gray-600">
+            {summary.net === 0 ? '━━' : formatCurrency(summary.net)}
           </div>
         </CardContent>
       </Card>
@@ -53,8 +53,8 @@ export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
             <Percent className="h-5 w-5" />
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-mono">
-            {summary.net && summary.income ? ((summary.net / summary.income) * 100).toFixed(1) : '0.0'}%
+          <div className="text-3xl font-mono text-gray-600">
+            {summary.net === 0 || summary.income === 0 ? '━━' : ((summary.net / summary.income) * 100).toFixed(1) + '%'}
           </div>
         </CardContent>
       </Card>

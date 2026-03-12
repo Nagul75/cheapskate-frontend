@@ -36,16 +36,16 @@ export interface TimeSummaryData {
 }
 
 export const dashboardApi = {
-  getSummary: async (month: number, year: number): Promise<SummaryData> => {
+  getSummary: async (month: number, year: number, accountId: string): Promise<SummaryData> => {
     const { data } = await api.get('/api/dashboard/summary', {
-      params: { month, year }
+      params: { month, year, accountId }
     });
     return data;
   },
 
-  getSummaryByCategory: async (month: number, year: number): Promise<CategorySummaryData> => {
+  getSummaryByCategory: async (month: number, year: number, accountId: string): Promise<CategorySummaryData> => {
     const { data } = await api.get('/api/dashboard/by-category', {
-      params: { month, year }
+      params: { month, year, accountId }
     });
     return data;
   },
@@ -53,37 +53,42 @@ export const dashboardApi = {
   getSummaryOverTime: async (
     startDate: string,
     endDate: string,
+    accountId: string,
     granularity: 'daily' | 'weekly' = 'daily'
   ): Promise<TimeSummaryData> => {
     const { data } = await api.get('/api/dashboard/over-time', {
-      params: { startDate, endDate, granularity }
+      params: { startDate, endDate, accountId, granularity }
     });
     return data;
   }
 };
 
 // React Query hooks
-export const useSummary = (month: number, year: number) => {
+export const useSummary = (month: number, year: number, accountId: string) => {
   return useQuery({
-    queryKey: ['summary', month, year],
-    queryFn: () => dashboardApi.getSummary(month, year),
+    queryKey: ['summary', month, year, accountId],
+    queryFn: () => dashboardApi.getSummary(month, year, accountId),
+    enabled: !!accountId,
   });
 };
 
-export const useSummaryByCategory = (month: number, year: number) => {
+export const useSummaryByCategory = (month: number, year: number, accountId: string) => {
   return useQuery({
-    queryKey: ['summaryByCategory', month, year],
-    queryFn: () => dashboardApi.getSummaryByCategory(month, year),
+    queryKey: ['summaryByCategory', month, year, accountId],
+    queryFn: () => dashboardApi.getSummaryByCategory(month, year, accountId),
+    enabled: !!accountId,
   });
 };
 
 export const useSummaryOverTime = (
   startDate: string,
   endDate: string,
+  accountId: string,
   granularity: 'daily' | 'weekly' = 'daily'
 ) => {
   return useQuery({
-    queryKey: ['summaryOverTime', startDate, endDate, granularity],
-    queryFn: () => dashboardApi.getSummaryOverTime(startDate, endDate, granularity),
+    queryKey: ['summaryOverTime', startDate, endDate, accountId, granularity],
+    queryFn: () => dashboardApi.getSummaryOverTime(startDate, endDate, accountId, granularity),
+    enabled: !!accountId,
   });
 };

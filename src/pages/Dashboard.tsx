@@ -6,6 +6,7 @@ import { SummaryCards } from "@/components/SummaryCards";
 import { CategorySpending } from "@/components/CategorySpending";
 import { TimeChart } from "@/components/TimeChart";
 import { BiggestExpenseCard } from "@/components/BiggestExpenseCard";
+import { useAccounts } from "@/api/accounts";
 
 export function Dashboard() {
   // Default to current month/year
@@ -16,6 +17,16 @@ export function Dashboard() {
 
   const startDate = new Date(selectedYear, selectedMonth - 1, 1).toISOString().split('T')[0];
   const endDate = new Date(selectedYear, selectedMonth, 0).toISOString().split('T')[0];
+
+  const {
+    data: accountsData,
+    isLoading: accountsLoading,
+    isError: accountsError,
+  } = useAccounts();
+
+  const noAccounts =
+    !accountsLoading && !accountsError && (accountsData?.accounts.length ?? 0) === 0;
+  const showAccountsWarning = accountsError || noAccounts;
 
   const { data: summary, isLoading: loading, error } = useSummary(selectedMonth, selectedYear);
   const { data: categoryData, isLoading: categoryLoading } = useSummaryByCategory(selectedMonth, selectedYear);
@@ -49,6 +60,8 @@ export function Dashboard() {
     <div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">Dashboard</h1>
+        
+        {/* Filters */}
         <div className="flex flex-wrap gap-2 sm:gap-4">
           <Select
             value={selectedMonth.toString()}
@@ -96,7 +109,20 @@ export function Dashboard() {
           </Select>
         </div>
       </div>
-
+      
+      {showAccountsWarning && (
+        <div className="mt-3 rounded-lg border border-amber-300/60 bg-amber-50 text-amber-900 px-3 py-2 text-sm dark:bg-amber-950/20 dark:text-amber-100 dark:border-amber-500/50">
+          {accountsError
+            ? "Could not load accounts. You need at least one account before viewing dashboard insights."
+            : "No accounts found. You need at least one account before viewing dashboard insights."}{" "}
+          <a href="#" className="underline underline-offset-4">
+            Create an account
+          </a>
+          .
+        </div>
+      )}
+      
+        {/* Summary Cards */}
       {error && (
         <div className="p-4 rounded-lg bg-destructive/10 text-destructive">
           {error.message || "Failed to load summary"}

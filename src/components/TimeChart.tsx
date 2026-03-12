@@ -8,6 +8,8 @@ interface TimeChartProps {
 }
 
 export function TimeChart({ timeData, formatCurrency }: TimeChartProps) {
+  if (!timeData.data.length) { return null; }
+
   const chartData = timeData.data.map(d => ({
     ...d,
     net: d.income - d.expense,

@@ -28,6 +28,7 @@ function getIcon(icon?: string | null): LucideIcon {
 }
 
 export function CategorySpending({ categoryData, fmt }: CategorySpendingProps) {
+  if(!categoryData.breakdown.length) { return null; }
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
 
   const PALETTE = [

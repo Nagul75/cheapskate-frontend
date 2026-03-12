@@ -8,6 +8,7 @@ interface SummaryCardsProps {
 }
 
 export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
+  if(!summary) { return null; }
   return (
     <div className="grid gap-4 md:grid-cols-4 mt-4">
       <Card className="rounded-none bg-green-50 dark:bg-green-900/10">
@@ -53,7 +54,7 @@ export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-3xl font-mono">
-            {((summary.net / summary.income) * 100).toFixed(1)}%
+            {summary.net && summary.income ? ((summary.net / summary.income) * 100).toFixed(1) : '0.0'}%
           </div>
         </CardContent>
       </Card>

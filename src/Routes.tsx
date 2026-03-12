@@ -7,6 +7,7 @@ import { Hero } from "./pages/Hero";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import {Dashboard} from "./pages/Dashboard";
 import { TransactionsPage } from "./pages/TransactionsPage";
+import { AccountsPage } from "./pages/AccountsPage";
 export const Routes:RouteObject[] = [
     {
         path: "/",
@@ -37,6 +38,10 @@ export const Routes:RouteObject[] = [
             {
                 path: "transactions",
                 element: <TransactionsPage/>
+            },
+            {
+                path: "accounts",
+                element: <AccountsPage/>
             },
         ]
     }

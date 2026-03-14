@@ -16,6 +16,9 @@ import {
   Zap,
 } from "lucide-react";
 
+import { useAuth } from "@/providers/authProvider";
+import { Navigate } from "react-router-dom";
+
 export function Hero() {
   const features = [
     {
@@ -55,6 +58,10 @@ export function Hero() {
         "Fast, responsive interface optimized for quick transaction entry.",
     },
   ];
+  const {isAuthenticated} = useAuth();
+  if(isAuthenticated) {
+    return <Navigate to="/app" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-background via-background to-pink-50/30 dark:to-pink-950/10">

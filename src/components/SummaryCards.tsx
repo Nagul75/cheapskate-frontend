@@ -53,7 +53,7 @@ export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
             <Percent className="h-5 w-5" />
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-mono text-gray-600">
+          <div className="text-3xl font-mono text-foreground">
             {summary.net === 0 || summary.income === 0 ? '━━' : ((summary.net / summary.income) * 100).toFixed(1) + '%'}
           </div>
         </CardContent>

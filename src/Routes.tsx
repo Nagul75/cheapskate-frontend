@@ -8,6 +8,9 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import {Dashboard} from "./pages/Dashboard";
 import { TransactionsPage } from "./pages/TransactionsPage";
 import { AccountsPage } from "./pages/AccountsPage";
+import { BudgetsPage } from "./pages/BudgetsPage";
+import { SettingsPage } from "./pages/SettingsPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 export const Routes:RouteObject[] = [
     {
         path: "/",
@@ -43,6 +46,18 @@ export const Routes:RouteObject[] = [
                 path: "accounts",
                 element: <AccountsPage/>
             },
+            {
+                path: "budgets",
+                element: <BudgetsPage/>
+            },
+            {
+                path: "settings",
+                element: <SettingsPage/>
+            },
         ]
+    },
+    {
+        path: "*",
+        element: <NotFoundPage/>
     }
 ]

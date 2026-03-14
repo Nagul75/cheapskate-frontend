@@ -31,15 +31,13 @@ export function AuthProvider({children}: {children: ReactNode}) {
         if (isAuth) {
           const data = await authApi.getMe();
           setUser(data.user);
+          setIsAuthenticated(true);
         }
-
-        setIsAuthenticated(isAuth);
       } catch {
         setIsAuthenticated(false);
-        setUser(null);
-      } finally {
-        setIsLoading(false);
       }
+
+      setIsLoading(false);
     };
 
     initAuth();

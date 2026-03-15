@@ -12,8 +12,8 @@ export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
   return (
     <div className="grid gap-4 md:grid-cols-4 mt-4">
       <Card className="rounded-none bg-green-50 dark:bg-green-900/10">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Income</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b">
+            <CardTitle className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Income</CardTitle>
             <TrendingUp className="h-5 w-5 text-green-600"/>
         </CardHeader>
         <CardContent>
@@ -24,8 +24,8 @@ export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
       </Card>
 
       <Card className="rounded-none bg-red-50 dark:bg-red-900/10">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Expenses</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 border-b">
+            <CardTitle className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Expenses</CardTitle>
             <MoveDown className="h-5 w-5 text-red-600" />
         </CardHeader>
         <CardContent>
@@ -36,8 +36,8 @@ export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
       </Card>
 
       <Card className="rounded-none bg-gray-50 dark:bg-gray-800/10">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Net</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 border-b">
+            <CardTitle className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Net</CardTitle>
             <Diff className="h-5 w-5 text-gray-700" />
         </CardHeader>
         <CardContent>
@@ -48,8 +48,8 @@ export function SummaryCards({ summary, formatCurrency }: SummaryCardsProps) {
       </Card>
 
       <Card className="rounded-none">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Savings rate</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 border-b">
+            <CardTitle className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Savings rate</CardTitle>
             <Percent className="h-5 w-5" />
         </CardHeader>
         <CardContent>

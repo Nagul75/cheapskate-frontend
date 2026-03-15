@@ -35,7 +35,8 @@ export function DeleteTransactionDialog({
         <DialogFooter>
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
+            className="cursor-pointer"
             onClick={() => onOpenChange(false)}
             disabled={loading}
           >
@@ -44,6 +45,7 @@ export function DeleteTransactionDialog({
           <Button
             type="button"
             variant="destructive"
+            className="cursor-pointer"
             onClick={onConfirm}
             disabled={loading}
           >

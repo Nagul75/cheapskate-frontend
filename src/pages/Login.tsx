@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/providers/authProvider";
 import { authApi } from "@/api/auth";
+import axios from "axios";
 
 export function Login() {
   const navigate = useNavigate();
@@ -32,7 +33,9 @@ export function Login() {
       setIsAuthenticated(true);
       navigate("/app", { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed. Please try again.");
+      if(axios.isAxiosError(err)) {
+        setError(err.response?.data?.error ?? "Login failed");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +59,7 @@ export function Login() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">
+              <div className="p-3 rounded-sm bg-destructive/10 text-destructive text-sm">
                 {error}
               </div>
             )}

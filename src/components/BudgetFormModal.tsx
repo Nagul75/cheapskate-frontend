@@ -4,9 +4,7 @@ import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { PiggyBank, Pencil } from "lucide-react";
 import {
   type Budget,
   type CreateBudgetInput,
@@ -38,6 +38,9 @@ interface BudgetFormModalProps {
   onSubmit: (values: BudgetFormValues) => Promise<void>;
   loading?: boolean;
 }
+
+const FIELD_LABEL = "text-xs font-semibold uppercase tracking-wide text-muted-foreground";
+const FIELD_ERROR = "text-xs text-destructive mt-1";
 
 export function BudgetFormModal({
   open,
@@ -65,7 +68,6 @@ export function BudgetFormModal({
 
   useEffect(() => {
     if (!open) return;
-
     if (mode === "edit" && initial) {
       form.reset({
         description: initial.description || "",
@@ -88,8 +90,6 @@ export function BudgetFormModal({
   }, [open, mode, initial, form]);
 
   const handleSubmit = async (values: any) => {
-    console.log("Form values being submitted:", values);
-    console.log("Mode:", mode);
     await onSubmit(values);
     if (mode === "create") {
       form.reset();
@@ -113,33 +113,54 @@ export function BudgetFormModal({
 
   const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - 2 + i);
 
+  const Icon = mode === "create" ? PiggyBank : Pencil;
+  const title = mode === "create" ? "Create Budget" : "Edit Budget";
+  const subtitle =
+    mode === "create"
+      ? "Set a spending limit for a category and period."
+      : "Update the details of this budget entry.";
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>
-            {mode === "create" ? "Create Budget" : "Edit Budget"}
-          </DialogTitle>
-        </DialogHeader>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <DialogContent className="sm:max-w-[425px] gap-0 p-0 overflow-hidden">
+        {/* Tinted header */}
+        <div className="bg-primary/5 border-b border-border p-4">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 border border-primary/20">
+              <Icon className="h-3.5 w-3.5 text-primary" />
+            </div>
+            <DialogTitle className="text-base font-semibold">{title}</DialogTitle>
+          </div>
+          <p className="text-xs text-muted-foreground ml-11">{subtitle}</p>
+        </div>
+
+        {/* Form body */}
+        <form
+          id="budget-form"
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="px-6 pt-5 pb-4 space-y-4"
+        >
           <Field>
-            <FieldLabel>Description</FieldLabel>
+            <FieldLabel className={FIELD_LABEL}>Description</FieldLabel>
             <Input
-              placeholder="Enter budget description"
+              className="mt-1.5"
+              placeholder="e.g. Monthly groceries"
               {...form.register("description")}
             />
             {form.formState.errors.description && (
-              <p className="text-sm text-red-600">{form.formState.errors.description?.message as string}</p>
+              <p className={FIELD_ERROR}>{form.formState.errors.description?.message as string}</p>
             )}
           </Field>
 
+          <Separator />
+
           <Field>
-            <FieldLabel>Account</FieldLabel>
+            <FieldLabel className={FIELD_LABEL}>Account</FieldLabel>
             <Select
               value={form.watch("accountId") || ""}
               onValueChange={(value) => form.setValue("accountId", value)}
             >
-              <SelectTrigger>
+              <SelectTrigger className="mt-1.5">
                 <SelectValue placeholder="Select account" />
               </SelectTrigger>
               <SelectContent>
@@ -151,56 +172,57 @@ export function BudgetFormModal({
               </SelectContent>
             </Select>
             {form.formState.errors.accountId && (
-              <p className="text-sm text-red-600">{form.formState.errors.accountId?.message as string}</p>
+              <p className={FIELD_ERROR}>{form.formState.errors.accountId?.message as string}</p>
             )}
           </Field>
 
           <Field>
-            <FieldLabel>Category</FieldLabel>
+            <FieldLabel className={FIELD_LABEL}>Category</FieldLabel>
             <Select
               value={form.watch("categoryId") || ""}
               onValueChange={(value) => form.setValue("categoryId", value)}
             >
-              <SelectTrigger>
+              <SelectTrigger className="mt-1.5">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                {categoriesData && [
-                  ...categoriesData.default,
-                  ...categoriesData.custom
-                ].map((category: any) => (
-                  <SelectItem key={category.id} value={category.id}>
-                    {category.name}
-                  </SelectItem>
-                ))}
+                {categoriesData &&
+                  [...categoriesData.default, ...categoriesData.custom].map((category: any) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
             {form.formState.errors.categoryId && (
-              <p className="text-sm text-red-600">{form.formState.errors.categoryId?.message as string}</p>
+              <p className={FIELD_ERROR}>{form.formState.errors.categoryId?.message as string}</p>
             )}
           </Field>
 
+          <Separator />
+
           <Field>
-            <FieldLabel>Budget Amount</FieldLabel>
+            <FieldLabel className={FIELD_LABEL}>Budget Amount</FieldLabel>
             <Input
               type="number"
               step="0.01"
               placeholder="0.00"
+              className="mt-1.5"
               {...form.register("amount", { valueAsNumber: true })}
             />
             {form.formState.errors.amount && (
-              <p className="text-sm text-red-600">{form.formState.errors.amount?.message as string}</p>
+              <p className={FIELD_ERROR}>{form.formState.errors.amount?.message as string}</p>
             )}
           </Field>
 
           <div className="grid grid-cols-2 gap-4">
             <Field>
-              <FieldLabel>Month</FieldLabel>
+              <FieldLabel className={FIELD_LABEL}>Month</FieldLabel>
               <Select
                 value={form.watch("month")?.toString()}
                 onValueChange={(value) => form.setValue("month", parseInt(value))}
               >
-                <SelectTrigger>
+                <SelectTrigger className="mt-1.5">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -212,17 +234,17 @@ export function BudgetFormModal({
                 </SelectContent>
               </Select>
               {form.formState.errors.month && (
-                <p className="text-sm text-red-600">{form.formState.errors.month?.message as string}</p>
+                <p className={FIELD_ERROR}>{form.formState.errors.month?.message as string}</p>
               )}
             </Field>
 
             <Field>
-              <FieldLabel>Year</FieldLabel>
+              <FieldLabel className={FIELD_LABEL}>Year</FieldLabel>
               <Select
                 value={form.watch("year")?.toString()}
                 onValueChange={(value) => form.setValue("year", parseInt(value))}
               >
-                <SelectTrigger>
+                <SelectTrigger className="mt-1.5">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -234,25 +256,42 @@ export function BudgetFormModal({
                 </SelectContent>
               </Select>
               {form.formState.errors.year && (
-                <p className="text-sm text-red-600">{form.formState.errors.year?.message as string}</p>
+                <p className={FIELD_ERROR}>{form.formState.errors.year?.message as string}</p>
               )}
             </Field>
           </div>
-
-          <DialogFooter className="flex justify-end gap-2 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={loading}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : mode === "create" ? "Create" : "Update"}
-            </Button>
-          </DialogFooter>
         </form>
+
+        <div className="flex items-center justify-end gap-2 border-t border-border bg-muted/40 px-6 py-4">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="cursor-pointer"
+            onClick={() => onOpenChange(false)}
+            disabled={loading}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="budget-form"
+            size="sm"
+            className="cursor-pointer"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="flex items-center gap-1.5">
+                <span className="h-3 w-3 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground animate-spin" />
+                Saving…
+              </span>
+            ) : mode === "create" ? (
+              "Create Budget"
+            ) : (
+              "Update Budget"
+            )}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -16,7 +16,7 @@ export function NotFoundPage() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="max-w-md w-full border-0 shadow-lg rounded-none">
+      <Card className="max-w-md w-full border-0 shadow-lg rounded-sm">
         <CardHeader className="text-center pb-6 pt-8">
           <div className="text-6xl font-bold text-pink-600 dark:text-pink-400 mb-4">
             404
@@ -35,7 +35,7 @@ export function NotFoundPage() {
           <div className="flex flex-col gap-3">
             <Button 
               onClick={handleGoHome}
-              className="rounded-none w-full cursor-pointer"
+              className="rounded-sm w-full cursor-pointer"
             >
               <Home className="w-4 h-4 mr-2" />
               Go Home
@@ -44,7 +44,7 @@ export function NotFoundPage() {
             <Button 
               onClick={handleGoBack} 
               variant="outline"
-              className="rounded-none w-full cursor-pointer"
+              className="rounded-sm w-full cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Go Back

@@ -64,7 +64,7 @@ export function CategorySpending({ categoryData, fmt }: CategorySpendingProps) {
   return (
     <Card className="rounded-none h-full">
       <CardHeader>
-        <CardTitle className="text-muted-foreground">Spending by Category</CardTitle>
+        <CardTitle className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Spending by Category</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">

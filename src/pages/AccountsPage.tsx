@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Wallet, TrendingUp, CreditCard, PiggyBank } from "lucide-react";
+import { Plus, Pencil, Trash2, Wallet, CircleCheck, CreditCard, PiggyBank, Landmark } from "lucide-react";
 
 import {
   type Account,
@@ -12,33 +12,21 @@ import {
 import { AccountFormModal, type AccountFormValues } from "@/components/AccountFormModal";
 import { DeleteAccountDialog } from "@/components/DeleteAccountDialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { convertToBaseCurrency, formatBaseCurrency } from "@/lib/exchangeRates";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { cn } from "@/lib/utils";
 
-const getAccountIcon = (type: AccountType) => {
+const getAccountMeta = (type: AccountType) => {
   switch (type) {
     case "CHECKING":
-      return Wallet;
+      return { icon: Wallet,     label: "Checking", color: "text-blue-500",  tile: "bg-blue-500/10  border-blue-500/20"  };
     case "SAVINGS":
-      return PiggyBank;
+      return { icon: PiggyBank,  label: "Savings",  color: "text-green-500", tile: "bg-green-500/10 border-green-500/20" };
     case "CREDIT":
-      return CreditCard;
+      return { icon: CreditCard, label: "Credit",   color: "text-amber-500", tile: "bg-amber-500/10 border-amber-500/20" };
     default:
-      return Wallet;
-  }
-};
-
-const getAccountTypeColor = (type: AccountType) => {
-  switch (type) {
-    case "CHECKING":
-      return "text-blue-600 bg-blue-50 dark:bg-blue-900/10";
-    case "SAVINGS":
-      return "text-green-600 bg-green-50 dark:bg-green-900/10";
-    case "CREDIT":
-      return "text-purple-600 bg-purple-50 dark:bg-purple-900/10";
-    default:
-      return "text-gray-600 bg-gray-50 dark:bg-gray-900/10";
+      return { icon: Landmark,   label: type,       color: "text-muted-foreground", tile: "bg-muted border-border" };
   }
 };
 
@@ -46,51 +34,29 @@ export function AccountsPage() {
   const { data: accountsData, isLoading } = useAccounts();
   const accounts = accountsData?.accounts || [];
 
-  const [formOpen, setFormOpen] = useState(false);
-  const [formMode, setFormMode] = useState<"create" | "edit">("create");
-  const [selected, setSelected] = useState<Account | null>(null);
-
+  const [formOpen, setFormOpen]   = useState(false);
+  const [formMode, setFormMode]   = useState<"create" | "edit">("create");
+  const [selected, setSelected]   = useState<Account | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteId, setDeleteId]   = useState<string | null>(null);
 
   const createMutation = useCreateAccount();
   const updateMutation = useUpdateAccount();
   const deleteMutation = useDeleteAccount();
 
-  const netWorth = accounts.reduce(
-    (total, account) => {
-      const balance = parseFloat(account.balance);
-      const convertedBalance = convertToBaseCurrency(balance, account.currency);
-      return total + convertedBalance;
-    },
-    0
-  );
+  const netWorth = accounts.reduce((total, account) => {
+    return total + convertToBaseCurrency(parseFloat(account.balance), account.currency);
+  }, 0);
 
-  const openCreate = () => {
-    setFormMode("create");
-    setSelected(null);
-    setFormOpen(true);
-  };
-
-  const openEdit = (account: Account) => {
-    setFormMode("edit");
-    setSelected(account);
-    setFormOpen(true);
-  };
-
-  const askDelete = (account: Account) => {
-    setDeleteId(account.id);
-    setDeleteOpen(true);
-  };
+  const openCreate = () => { setFormMode("create"); setSelected(null); setFormOpen(true); };
+  const openEdit   = (a: Account) => { setFormMode("edit"); setSelected(a); setFormOpen(true); };
+  const askDelete  = (a: Account) => { setDeleteId(a.id); setDeleteOpen(true); };
 
   const handleSubmitForm = async (values: AccountFormValues) => {
     if (formMode === "create") {
       await createMutation.mutateAsync(values as any);
     } else if (selected) {
-      await updateMutation.mutateAsync({
-        id: selected.id,
-        data: values as any,
-      });
+      await updateMutation.mutateAsync({ id: selected.id, data: values as any });
     }
     setFormOpen(false);
   };
@@ -101,77 +67,166 @@ export function AccountsPage() {
     setDeleteOpen(false);
   };
 
-  const selectedAccount = accounts.find(acc => acc.id === deleteId);
+  const selectedAccount = accounts.find((a) => a.id === deleteId);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* ── Page header ── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold">Accounts</h1>
-        <Button type="button" onClick={openCreate}>
-          <Plus className="w-4 h-4 mr-1" />
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-1">
+            Finance
+          </p>
+          <h1 className="text-3xl font-bold tracking-tight">Accounts</h1>
+        </div>
+        <Button type="button" size="sm" onClick={openCreate}>
+          <Plus className="w-4 h-4 mr-1.5" />
           Add Account
         </Button>
       </div>
 
-      {/* Net Worth Card */}
-      <Card className="bg-linear-to-r from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 border-blue-200 dark:border-blue-800 rounded-none">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-lg font-semibold text-blue-900 dark:text-blue-100">
-            Net Worth
-          </CardTitle>
-          <TrendingUp className="h-6 w-6 text-blue-600" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-mono text-blue-900 dark:text-blue-100">
-            {formatBaseCurrency(netWorth)}
+      {/* ── Net Worth banner ── */}
+      {(() => {
+        const byType = ["CHECKING", "SAVINGS", "CREDIT"].map((type) => {
+          const accs = accounts.filter((a) => a.type === type);
+          const total = accs.reduce((s, a) => s + convertToBaseCurrency(parseFloat(a.balance), a.currency), 0);
+          return { type, total };
+        });
+        const maxAbs = Math.max(...byType.map((b) => Math.abs(b.total)), 1);
+        const positiveCount = accounts.filter((a) => parseFloat(a.balance) >= 0).length;
+ 
+        const typeConfig: Record<string, { label: string; barColor: string; negColor: string }> = {
+          CHECKING: { label: "Checking", barColor: "bg-blue-500",  negColor: "bg-destructive" },
+          SAVINGS:  { label: "Savings",  barColor: "bg-green-500", negColor: "bg-destructive" },
+          CREDIT:   { label: "Credit",   barColor: "bg-amber-500", negColor: "bg-destructive" },
+        };
+ 
+        return (
+          <div className="overflow-hidden rounded-sm border border-border bg-card">
+            {/* Main row */}
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto]">
+              {/* Left — headline figures */}
+              <div className="px-6 py-5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground mb-3">
+                  Net Worth
+                </p>
+                <p className="font-mono text-4xl font-semibold tracking-tight leading-none mb-5">
+                  {formatBaseCurrency(netWorth)}
+                </p>
+                <div className="flex items-center gap-5">
+                  <div>
+                    <p className="text-[11px] text-muted-foreground mb-0.5">Accounts</p>
+                    <p className="text-sm font-semibold">{accounts.length}</p>
+                  </div>
+                  <div className="h-6 w-px bg-border" />
+                  <div>
+                    <p className="text-[11px] text-muted-foreground mb-0.5">Base currency</p>
+                    <p className="text-sm font-semibold">USD</p>
+                  </div>
+                  <div className="h-6 w-px bg-border" />
+                  <div>
+                    <p className="text-[11px] text-muted-foreground mb-0.5">Positive</p>
+                    <p className={cn("text-sm font-semibold", positiveCount === accounts.length ? "text-green-600 dark:text-green-400" : "text-foreground")}>
+                      {positiveCount} of {accounts.length}
+                    </p>
+                  </div>
+                </div>
+              </div>
+ 
+              {/* Right — breakdown panel */}
+              <div className="border-t sm:border-t-0 sm:border-l border-border bg-muted/40 px-5 py-5 min-w-[180px]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground mb-3">
+                  By type
+                </p>
+                <div className="space-y-3">
+                  {byType.map(({ type, total }) => {
+                    const cfg = typeConfig[type];
+                    const pct = Math.round((Math.abs(total) / maxAbs) * 100);
+                    const isNeg = total < 0;
+                    return (
+                      <div key={type}>
+                        <div className="flex items-baseline justify-between mb-1">
+                          <span className="text-xs text-muted-foreground">{cfg.label}</span>
+                          <span className={cn("text-xs font-mono font-medium", isNeg ? "text-destructive" : "text-foreground")}>
+                            {isNeg ? "−" : ""}{formatBaseCurrency(Math.abs(total))}
+                          </span>
+                        </div>
+                        <div className="h-0.75 rounded-full bg-border overflow-hidden">
+                          <div
+                            className={cn("h-full rounded-full transition-all", isNeg ? cfg.negColor : cfg.barColor)}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+ 
+            {/* Footer strip */}
+            <div className="flex items-center gap-2 border-t border-border bg-muted/40 px-6 py-2">
+              <CircleCheck className="h-3 w-3 text-green-500 shrink-0" />
+              <p className="text-[11px] text-muted-foreground">
+                Balances converted to USD using live exchange rates
+              </p>
+            </div>
           </div>
-          <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-            Total across {accounts.length} account{accounts.length !== 1 ? "s" : ""} (converted to USD)
-          </p>
-        </CardContent>
-      </Card>
+        );
+      })()}
 
-      {/* Account Cards */}
+      {/* ── Account grid / states ── */}
       {isLoading ? (
-        <div className="text-center py-8">Loading accounts...</div>
-      ) : accounts.length === 0 ? (
-        <Card className="text-center py-8 rounded-none">
-          <CardContent>
-            <Wallet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-              No accounts yet
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Create your first account to start tracking your finances
-            </p>
-            <Button onClick={openCreate}>
-              <Plus className="w-4 h-4 mr-1" />
-              Create Account
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-36 rounded-sm border border-border bg-card animate-pulse" />
+          ))}
+        </div>
+      ) : accounts.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-sm border border-dashed border-border bg-card/50 py-16 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-muted mb-4">
+            <Wallet className="h-5 w-5 text-muted-foreground" />
+          </div>
+          <h3 className="text-sm font-semibold mb-1">No accounts yet</h3>
+          <p className="text-xs text-muted-foreground mb-5 max-w-[220px]">
+            Add your first account to start tracking your finances.
+          </p>
+          <Button size="sm" onClick={openCreate}>
+            <Plus className="w-4 h-4 mr-1.5" />
+            Create Account
+          </Button>
+        </div>
+      ) : (
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {accounts.map((account) => {
-            const Icon = getAccountIcon(account.type);
-            const colorClass = getAccountTypeColor(account.type);
+            const { icon: Icon, label, color, tile } = getAccountMeta(account.type);
             const balance = parseFloat(account.balance);
-            
+            const isNegative = balance < 0;
+
             return (
-              <Card key={account.id} className="hover:shadow-md duration-200 hover:rounded-l-md rounded-none hover:border-l-4 hover:border-l-chart-1 transition-all">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                  <div className="flex items-center space-x-2">
-                    <div className={`p-2 rounded-lg ${colorClass}`}>
-                      <Icon className="h-5 w-5" />
+              <div
+                key={account.id}
+                className="group relative flex flex-col justify-between rounded-sm border border-border bg-card px-5 py-4 transition-all duration-200 hover:border-border/80 hover:shadow-sm"
+              >
+                {/* Top row */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-md border", tile)}>
+                      <Icon className={cn("h-4 w-4", color)} />
                     </div>
                     <div>
-                      <CardTitle className="text-base">{account.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground capitalize">
-                        {account.type.toLowerCase()}
-                      </p>
+                      <p className="text-sm font-semibold leading-tight">{account.name}</p>
+                      <Badge
+                        variant="secondary"
+                        className="mt-1 text-[10px] font-medium px-1.5 py-0 h-4 rounded-sm"
+                      >
+                        {label}
+                      </Badge>
                     </div>
                   </div>
-                  <div className="flex space-x-1">
+
+                  {/* Action buttons — visible on hover */}
+                  <div className="flex gap-0.5">
                     <Button
                       type="button"
                       variant="ghost"
@@ -187,20 +242,21 @@ export function AccountsPage() {
                       size="icon-xs"
                       onClick={() => askDelete(account)}
                       aria-label="Delete account"
+                      className="hover:text-destructive hover:bg-destructive/10"
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className={`text-2xl font-mono ${balance >= 0 ? 'text-foreground' : 'text-red-600'}`}>
+                </div>
+
+                {/* Bottom row — balance */}
+                <div>
+                  <p className={cn("text-2xl font-mono font-semibold tracking-tight", isNegative ? "text-destructive" : "text-foreground")}>
                     {formatCurrency(balance, account.currency)}
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {account.currency}
                   </p>
-                </CardContent>
-              </Card>
+                  <p className="text-xs text-muted-foreground mt-0.5">{account.currency}</p>
+                </div>
+              </div>
             );
           })}
         </div>

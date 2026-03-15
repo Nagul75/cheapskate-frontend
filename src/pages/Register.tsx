@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/providers/authProvider";
 import { authApi } from "@/api/auth";
+import axios from "axios";
 
 export function Register() {
   const navigate = useNavigate();
@@ -32,8 +33,8 @@ export function Register() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
       return;
     }
 
@@ -44,7 +45,9 @@ export function Register() {
       setIsAuthenticated(true);
       navigate("/app", { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed. Please try again.");
+      if(axios.isAxiosError(err)) {
+        setError(err.response?.data?.error ?? "Registration failed");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +63,7 @@ export function Register() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">
+              <div className="p-3 rounded-sm bg-destructive/10 text-destructive text-sm">
                 {error}
               </div>
             )}

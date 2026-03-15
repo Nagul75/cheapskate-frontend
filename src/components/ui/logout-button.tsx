@@ -11,11 +11,11 @@ export function LogoutButton() {
 
   return (
     <Button
-      variant="ghost"
+      variant="destructive"
       size="icon"
       onClick={handleLogout}
+      className="cursor-pointer"
       aria-label="Logout"
-      className="hover:bg-red-100 hover:border-red-200 hover:dark:bg-red-900/20 hover:dark:border-red-900/40 hover:cursor-pointer"
     >
       <LogOut size={20} />
     </Button>

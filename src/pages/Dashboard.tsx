@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSummary, useSummaryByCategory, useSummaryOverTime } from "@/api/dashboard";
-import { Loader2 } from "lucide-react";
+import { Loader2, LayoutDashboard } from "lucide-react";
 import { SummaryCards } from "@/components/SummaryCards";
 import { CategorySpending } from "@/components/CategorySpending";
 import { TimeChart } from "@/components/TimeChart";
@@ -141,14 +141,19 @@ export function Dashboard() {
       </div>
       
       {showAccountsWarning && (
-        <div className="mt-3 rounded-lg border border-amber-300/60 bg-amber-50 text-amber-900 px-3 py-2 text-sm dark:bg-amber-950/20 dark:text-amber-100 dark:border-amber-500/50">
-          {accountsError
-            ? "Could not load accounts. You need at least one account before viewing dashboard insights."
-            : "No accounts found. You need at least one account before viewing dashboard insights."}{" "}
-          <a href="/app/accounts" className="underline underline-offset-4">
-            Create an account
-          </a>
-          .
+        <div className="mt-4 flex items-start gap-3 rounded-sm border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm text-amber-700 dark:text-amber-400">
+          <LayoutDashboard className="h-4 w-4 mt-0.5 shrink-0" />
+          <span>
+            {accountsError
+              ? "Could not load accounts. You need at least one account before adding transactions."
+              : "No accounts found. Please "}
+            {!accountsError && (
+              <a href="/app/accounts" className="underline underline-offset-4 font-medium">
+                create an account
+              </a>
+            )}
+            {!accountsError && " first."}
+          </span>
         </div>
       )}
       

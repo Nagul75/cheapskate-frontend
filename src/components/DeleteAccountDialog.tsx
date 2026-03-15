@@ -39,11 +39,12 @@ export function DeleteAccountDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={loading} variant='ghost' className="cursor-pointer">Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
             disabled={loading}
-            className="bg-red-600 hover:bg-red-700"
+            variant="destructive"
+            className="cursor-pointer"
           >
             {loading ? "Deleting..." : "Delete"}
           </AlertDialogAction>

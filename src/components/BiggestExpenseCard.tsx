@@ -32,7 +32,7 @@ export function BiggestExpenseCard({ categoryData, fmt }: BiggestExpenseCardProp
   return (
     <Card className="rounded-none h-full flex flex-col">
       <CardHeader className="pb-1">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
+        <CardTitle className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
           Biggest expense
         </CardTitle>
       </CardHeader>

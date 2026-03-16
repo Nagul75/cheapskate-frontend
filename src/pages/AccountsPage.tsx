@@ -134,7 +134,7 @@ export function AccountsPage() {
               </div>
  
               {/* Right — breakdown panel */}
-              <div className="border-t sm:border-t-0 sm:border-l border-border bg-muted/40 px-5 py-5 min-w-[180px]">
+              <div className="border-t sm:border-t-0 sm:border-l border-border bg-muted/40 px-5 py-5 min-w-45">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground mb-3">
                   By type
                 </p>
@@ -188,7 +188,7 @@ export function AccountsPage() {
             <Wallet className="h-5 w-5 text-muted-foreground" />
           </div>
           <h3 className="text-sm font-semibold mb-1">No accounts yet</h3>
-          <p className="text-xs text-muted-foreground mb-5 max-w-[220px]">
+          <p className="text-xs text-muted-foreground mb-5 max-w-55">
             Add your first account to start tracking your finances.
           </p>
           <Button size="sm" onClick={openCreate}>

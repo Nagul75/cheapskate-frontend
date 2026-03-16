@@ -18,9 +18,7 @@ import { changePasswordSchema, type ChangePasswordInput } from "@/api/settings";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -133,8 +131,8 @@ export function SettingsPage() {
 
       {/* Change Password Dialog */}
       <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-        <DialogContent className="sm:max-w-[400px] gap-0 p-0 overflow-hidden">
-          {/* Dialog Header with accent strip */}
+        <DialogContent className="sm:max-w-100 gap-0 p-0 overflow-hidden">
+          {/* Dialog Header */}
           <div className="bg-primary/5 border-b border-border p-4">
             <div className="flex items-center gap-3 mb-1">
               <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 border border-primary/20">

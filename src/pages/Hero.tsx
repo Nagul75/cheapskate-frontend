@@ -9,8 +9,6 @@ import {
   Zap,
   ArrowRight,
   ShieldCheck,
-  Github,
-  Linkedin
 } from "lucide-react";
 import { useAuth } from "@/providers/authProvider";
 import { Navigate } from "react-router-dom";
@@ -26,7 +24,7 @@ const FEATURES = [
     icon: PieChart,
     title: "Visual Analytics",
     description:
-      "See spending patterns with interactive charts and detailed breakdowns.",
+      "See spending patterns with charts and detailed breakdowns.",
   },
   {
     icon: Target,

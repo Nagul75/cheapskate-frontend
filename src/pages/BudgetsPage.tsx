@@ -335,7 +335,7 @@ export function BudgetsPage() {
           <h3 className="text-sm font-semibold mb-1">
             No budgets for this period
           </h3>
-          <p className="text-xs text-muted-foreground mb-5 max-w-[220px]">
+          <p className="text-xs text-muted-foreground mb-5 max-w-55">
             Add a budget to start tracking your spending for {monthLabel}{" "}
             {selectedYear}.
           </p>

@@ -29,7 +29,7 @@ export function TimeChart({ timeData, formatCurrency }: TimeChartProps) {
   return (
     <div className="mt-4 flex gap-4 flex-col md:flex-row">
       <Card className="flex-1 rounded-none">
-        <CardHeader className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+        <CardHeader className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 border-b">
           <CardTitle className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Income vs Expenses Over Time</CardTitle>
         </CardHeader>
         <CardContent className="mt-3">
@@ -59,7 +59,7 @@ export function TimeChart({ timeData, formatCurrency }: TimeChartProps) {
       </Card>
 
       <Card className="flex-1 rounded-none">
-        <CardHeader className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+        <CardHeader className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 border-b">
           <CardTitle className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Net Savings Over Time</CardTitle>
         </CardHeader>
         <CardContent>

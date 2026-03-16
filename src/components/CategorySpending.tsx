@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import type { CategorySummaryData } from "@/api/dashboard";
 import * as Icons from "lucide-react";
@@ -27,24 +26,16 @@ function getIcon(icon?: string | null): LucideIcon {
   return DynamicIcon ?? PiggyBank;
 }
 
-export function CategorySpending({ categoryData, fmt }: CategorySpendingProps) {
-  if(!categoryData.breakdown.length) { return null; }
-  const [activeCategory, setActiveCategory] = useState<number | null>(null);
+const PALETTE = [
+  "#3b82f6", "#ec4899", "#8b5cf6", "#22c55e",
+  "#eab308", "#f97316", "#6366f1", "#14b8a6",
+  "#a855f7", "#ef4444", "#0ea5e9", "#84cc16",
+];
 
-  const PALETTE = [
-    "#3b82f6", // blue-500
-    "#ec4899", // pink-500
-    "#8b5cf6", // violet-500
-    "#22c55e", // green-500
-    "#eab308", // yellow-500
-    "#f97316", // orange-500
-    "#6366f1", // indigo-500
-    "#14b8a6", // teal-500
-    "#a855f7", // purple-500
-    "#ef4444", // red-500
-    "#0ea5e9", // sky-500
-    "#84cc16", // lime-500
-  ];
+export function CategorySpending({ categoryData, fmt }: CategorySpendingProps) {
+  if (!categoryData.breakdown.length) return null;
+
+  const [activeCategory, setActiveCategory] = useState<number | null>(null);
 
   const pieData = categoryData.breakdown.map((b, i) => ({
     name: b.category?.name ?? "Uncategorized",
@@ -54,31 +45,34 @@ export function CategorySpending({ categoryData, fmt }: CategorySpendingProps) {
     color: PALETTE[i % PALETTE.length],
     idx: i,
   }));
+
   const totalSpent = pieData.reduce((s, d) => s + d.value, 0);
-  const rowData = [...pieData].sort((a, b) => {
-    const aHasBudget = a.budget > 0 ? 1 : 0;
-    const bHasBudget = b.budget > 0 ? 1 : 0;
-    return aHasBudget - bHasBudget; // budgeted categories last
-  });
+  const rowData = [...pieData].sort((a, b) => b.value - a.value);
+  const activeItem = activeCategory !== null ? pieData[activeCategory] : null;
 
   return (
-    <Card className="rounded-none h-full">
-      <CardHeader>
-        <CardTitle className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Spending by Category</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
-          
-          {/* donut */}
-          <div className="relative shrink-0 w-full md:w-auto flex justify-center md:block">
-            <ResponsiveContainer width={190} height={190}>
+    <div className="rounded-none border border-border bg-card overflow-hidden flex flex-col">
+      {/* Header */}
+      <div className="px-5 py-4 border-b border-border shrink-0">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          Spending by category
+        </p>
+      </div>
+
+      {/* Body — fixed height, never grows */}
+      <div className="flex flex-col md:flex-row" style={{ height: "280px" }}>
+
+        {/* ── Donut — never shrinks ── */}
+        <div className="flex items-center justify-center shrink-0 md:w-48" style={{ minWidth: "160px", padding: "16px" }}>
+          <div className="relative" style={{ width: "148px", height: "148px", flexShrink: 0 }}>
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={58}
-                  outerRadius={86}
+                  innerRadius={46}
+                  outerRadius={68}
                   dataKey="value"
                   startAngle={90}
                   endAngle={-270}
@@ -90,96 +84,107 @@ export function CategorySpending({ categoryData, fmt }: CategorySpendingProps) {
                     <Cell
                       key={i}
                       fill={d.color}
-                      opacity={activeCategory === null || activeCategory === i ? 1 : 0.3}
-                      style={{ cursor: "pointer", transition: "opacity 0.2s" }}
+                      opacity={activeCategory === null || activeCategory === i ? 1 : 0.25}
+                      style={{ cursor: "pointer", transition: "opacity 0.15s" }}
                     />
                   ))}
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
+
+            {/* Centre label */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              {activeCategory !== null ? (
-                (() => {
-                  const d = pieData[activeCategory];
-                  const over = d.budget > 0 && d.value > d.budget;
-                  return (
-                    <>
-                      <div className="text-[10px] text-gray-400 font-mono">{d.name}</div>
-                      <div
-                        className={`text-base font-bold mt-0.5 ${over ? 'text-red-500' : ''}`}
-                        style={!over ? { color: d.color } : undefined}
-                      >
-                        {fmt(d.value)}
-                      </div>
-                      <div className="text-[11px] text-gray-500 font-mono">
-                        {((d.value / totalSpent) * 100).toFixed(0)}%
-                      </div>
-                    </>
-                  );
-                })()
+              {activeItem ? (
+                <>
+                  <span className="text-[10px] text-muted-foreground leading-tight text-center px-1 truncate max-w-[80px]">
+                    {activeItem.name}
+                  </span>
+                  <span
+                    className="text-base font-semibold font-mono leading-tight mt-0.5"
+                    style={{ color: activeItem.budget > 0 && activeItem.value > activeItem.budget ? "#ef4444" : activeItem.color }}
+                  >
+                    {fmt(activeItem.value)}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground font-mono">
+                    {((activeItem.value / totalSpent) * 100).toFixed(0)}%
+                  </span>
+                </>
               ) : (
                 <>
-                  <div className="text-[11px] text-muted-foreground font-mono">categories</div>
-                  <div className="text-2xl font-bold text-muted-foreground font-sans">{pieData.length}</div>
+                  <span className="text-[11px] text-muted-foreground">total</span>
+                  <span className="text-md font-semibold font-mono leading-tight">{fmt(totalSpent)}</span>
+                  <span className="text-[10px] text-muted-foreground">{pieData.length} categories</span>
                 </>
               )}
             </div>
           </div>
+        </div>
 
-          {/* rows */}
-          <div className="flex-1 flex flex-col gap-3.5 ml-0 md:ml-10">
-            {rowData.map((d) => {
-              const over = d.value > d.budget && d.budget > 0;
-              const atOrOver = d.budget > 0 && d.value >= d.budget;
-              const Icon = getIcon(d.icon);
-              const progressValue =
-                d.budget > 0 ? Math.min(100, Math.round((d.value / d.budget) * 100)) : 0;
-              return (
-                <div
-                  key={`${d.name}-${d.idx}`}
-                  onMouseEnter={() => setActiveCategory(d.idx)}
-                  onMouseLeave={() => setActiveCategory(null)}
-                  className={`cursor-default transition-opacity duration-200 ${activeCategory === null || activeCategory === d.idx ? 'opacity-100' : 'opacity-50'}`}
-                >
-                  <div className="flex justify-between mb-1.5 items-center">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center"
-                        style={{ backgroundColor: `${d.color}1a` }} // ~10% opacity
-                      >
-                        <Icon className="w-4 h-4" style={{ color: d.color }} />
-                      </div>
-                      <span className={`text-sm font-sans transition-colors duration-200 ${activeCategory === d.idx ? 'text-foreground' : 'text-foreground/60'}`}>
-                        {d.name}
-                      </span>
+        {/* ── Divider ── */}
+        <div className="hidden md:block w-px bg-border shrink-0" />
+        <div className="md:hidden h-px bg-border shrink-0" />
+
+        {/* ── Rows — scrollable ── */}
+        <div className="flex-1 flex flex-col gap-3 px-5 py-4 overflow-y-auto min-h-0 bg-muted/30">
+          {rowData.map((d) => {
+            const over = d.budget > 0 && d.value > d.budget;
+            const progressValue = d.budget > 0 ? Math.min(100, Math.round((d.value / d.budget) * 100)) : 0;
+            const Icon = getIcon(d.icon);
+            const isActive = activeCategory === null || activeCategory === d.idx;
+
+            return (
+              <div
+                key={`${d.name}-${d.idx}`}
+                onMouseEnter={() => setActiveCategory(d.idx)}
+                onMouseLeave={() => setActiveCategory(null)}
+                className="cursor-default transition-opacity duration-150"
+                style={{ opacity: isActive ? 1 : 0.35 }}
+              >
+                <div className="flex items-center justify-between gap-3 mb-1.5">
+                  {/* Icon + name */}
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md"
+                      style={{ backgroundColor: `${d.color}18` }}
+                    >
+                      <Icon className="h-3.5 w-3.5" style={{ color: d.color }} />
                     </div>
-                    <div className="font-mono text-xs flex gap-1.5 items-center">
-                      <span className={over ? 'text-red-500' : 'text-foreground/60'}>{fmt(d.value)}</span>
-                      {d.budget > 0 && <span className="text-foreground/60">/ {fmt(d.budget)}</span>}
-                      {over && (
-                        <span className="hidden md:inline-flex text-[10px] bg-red-100 text-red-600 dark:bg-red-700 dark:text-red-100 px-1.5 py-0.5 rounded font-mono">
-                          +{fmt(d.value - d.budget)}
-                        </span>
-                      )}
-                    </div>
+                    <span className="text-sm font-medium truncate">{d.name}</span>
                   </div>
 
-                  {d.budget > 0 && (
-                    <div className="pl-10">
-                      <Progress
-                        value={progressValue}
-                        className="h-1.5"
-                        indicatorClassName={atOrOver ? "bg-red-600/80" : undefined}
-                        indicatorStyle={!atOrOver ? { backgroundColor: d.color } : undefined}
-                      />
-                    </div>
-                  )}
+                  {/* Amounts */}
+                  <div className="flex items-center gap-1.5 shrink-0 font-mono text-xs">
+                    <span className={over ? "text-destructive font-medium" : "text-foreground"}>
+                      {fmt(d.value)}
+                    </span>
+                    {d.budget > 0 && (
+                      <span className="text-muted-foreground">/ {fmt(d.budget)}</span>
+                    )}
+                    {over && (
+                      <span className="text-[10px] bg-destructive/10 border border-destructive/20 text-destructive px-1.5 py-0.5 rounded-sm font-semibold">
+                        +{fmt(d.value - d.budget)}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              );
-            })}
-          </div>
+
+                {/* Progress bar — only if budgeted */}
+                {d.budget > 0 && (
+                  <div className="pl-9">
+                    <Progress
+                      value={progressValue}
+                      className="h-1"
+                      indicatorClassName={over ? "bg-destructive" : undefined}
+                      indicatorStyle={!over ? { backgroundColor: d.color } : undefined}
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
-      </CardContent>
-    </Card>
+
+      </div>
+    </div>
   );
 }

@@ -61,7 +61,8 @@ api.interceptors.response.use(
     if (
       err.response?.status !== 401 ||
       original._retry ||
-      original.url === "/auth/refresh"
+      original.url === "/auth/refresh" ||
+      original.url === "/auth/login" 
     ) {
       return Promise.reject(err);
     }

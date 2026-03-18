@@ -2,7 +2,7 @@
 
 Frontend for **Cheapskate**, a modern personal finance tracking application with a focus on performance, usability, and real-time analytics.
 
-![MacBook_Pro_Cheapskate](https://github.com/user-attachments/assets/e5043526-6f9c-4ee5-8665-a940b6ac55a7)
+![MacBook_Pro_Cheapskate](https://github.com/user-attachments/assets/47ecdc98-5977-429c-b140-966f998bfabd)
 
 ## Overview
 

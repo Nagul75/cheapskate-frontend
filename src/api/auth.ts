@@ -23,7 +23,7 @@ export const authApi = {
     refreshSession: async (): Promise<boolean> => {
         try {
             const {data} = await axios.post(
-                'http://localhost:3000/auth/refresh',
+                'https://api.cheapskate.in/auth/refresh',
                 {},
                 {withCredentials: true}
             )

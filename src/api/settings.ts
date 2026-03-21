@@ -1,5 +1,5 @@
 import api from "@/lib/axiosInstance";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 
 export const updateProfileSchema = z.object({

@@ -9,7 +9,7 @@ import axios from "axios";
 
 export function Register() {
   const navigate = useNavigate();
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { isAuthenticated} = useAuth();
   const [name, setName]                       = useState("");
   const [email, setEmail]                     = useState("");
   const [password, setPassword]               = useState("");
@@ -38,8 +38,7 @@ export function Register() {
     setIsLoading(true);
     try {
       await authApi.register({ name, email, password });
-      setIsAuthenticated(true);
-      navigate("/app", { replace: true });
+      navigate("/login", { replace: true });
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.error ?? "Registration failed. Please try again.");

@@ -2,7 +2,7 @@ import axios, { type AxiosRequestConfig } from "axios";
 import { tokenStore } from "./tokens";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: "https://api.cheapskate.in/",
   withCredentials: true,
 });
 
@@ -31,7 +31,7 @@ function doRefresh(): Promise<string> {
 
   refreshPromise = axios
     .post<{ accessToken: string }>(
-      "http://localhost:3000/auth/refresh",
+      "https://api.cheapskate.in/auth/refresh",
       {},
       { withCredentials: true },
     )

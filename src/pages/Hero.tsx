@@ -296,7 +296,6 @@ export function Hero() {
               >
                 Github
               </a>
-              <div className="h-3 w-px bg-border" />
             </div>
           </div>
         </div>

@@ -269,7 +269,7 @@ export function Hero() {
           <div className="border-t border-border bg-muted/40 px-8 py-3 flex items-center gap-2">
             <ShieldCheck className="h-3.5 w-3.5 text-green-500 shrink-0" />
             <span className="text-[11px] text-muted-foreground">
-              No credit card required · Cancel anytime · Your data stays yours
+              No credit card required · Your data stays yours
             </span>
           </div>
         </div>
@@ -297,14 +297,6 @@ export function Hero() {
                 Github
               </a>
               <div className="h-3 w-px bg-border" />
-              <a
-                href="https://linkedin.com/in/nagul25"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors font-medium"
-              >
-                LinkedIn
-              </a>
             </div>
           </div>
         </div>
